@@ -218,7 +218,7 @@ dialog input[type="number"]:focus {
   transform: translateY(-1px);
 }
 
-dialog div:has(input[type="radio"]) {
+dialog div:has(input[type="checkbox"]) {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -228,13 +228,13 @@ dialog div:has(input[type="radio"]) {
   margin-bottom: 2rem;
 }
 
-dialog input[type="radio"] {
+dialog input[type="checkbox"] {
   width: 20px;
   height: 20px;
   cursor: pointer;
 }
 
-dialog div:has(input[type="radio"]) label {
+dialog div:has(input[type="checkbox"]) label {
   margin-bottom: 0;
   cursor: pointer;
   color: #475569;

@@ -16,6 +16,10 @@ function Book(author, title, pages, status) {
   this.status = status;
 }
 
+Book.prototype.changeStatus = function () {
+  this.status = !this.status;
+};
+
 function addBookToLibrary(author, title, pages, status) {
   // take params, create a book then store it in the array
   const newBook = new Book(author, title, pages, status);
@@ -28,56 +32,90 @@ addBtn.addEventListener("click", () => {
 
 submitBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log(
+  addBookToLibrary(
     authorInput.value,
     titleInput.value,
     pagesInput.value,
     statusInput.checked
   );
+
+  clearForm();
   dialog.close();
+  displayBooks();
 });
+
+function clearForm() {
+  authorInput.value = "";
+  titleInput.value = "";
+  pagesInput.value = "";
+  statusInput.checked = false;
+}
+
+function createRow(book) {
+  const trow = document.createElement("tr");
+  trow.setAttribute("data-id", book.id);
+
+  trow.appendChild(createColumns(book.author, "author"));
+  trow.appendChild(createColumns(book.title, "title"));
+  trow.appendChild(createColumns(book.pages, "pages"));
+  trow.appendChild(createColumns(createStatusBadge(book.status), "status"));
+
+  return trow;
+}
+
+function createColumns(item, className) {
+  const tdata = document.createElement("td");
+  if (className) tdata.classList.add(className);
+  if (item instanceof HTMLElement) {
+    tdata.appendChild(item);
+  } else {
+    tdata.textContent = item;
+  }
+
+  return tdata;
+}
+
+function createStatusBadge(status) {
+  const badge = document.createElement("span");
+  badge.classList.add("status-badge", status ? "status-read" : "status-unread");
+  badge.textContent = status ? "Read" : "Unread";
+  return badge;
+}
+
+function createActionsButtons(id) {
+  const actionsTd = createColumns("", "actions");
+
+  const statusBtn = document.createElement("button");
+  statusBtn.classList.add("btn", "btn-status");
+  statusBtn.textContent = "Change Status";
+  statusBtn.addEventListener("click", () => {
+    const index = myLibrary.findIndex((item) => item.id === id);
+    myLibrary[index].changeStatus();
+    displayBooks();
+  });
+
+  const delBtn = document.createElement("button");
+  delBtn.classList.add("btn", "btn-delete");
+  delBtn.textContent = "Delete";
+  delBtn.addEventListener("click", () => {
+    const index = myLibrary.findIndex((item) => item.id === id);
+    myLibrary.splice(index, 1);
+    displayBooks();
+  });
+
+  actionsTd.appendChild(statusBtn);
+  actionsTd.appendChild(delBtn);
+
+  return actionsTd;
+}
 
 function displayBooks() {
   tbody.textContent = "";
   myLibrary.forEach((item) => {
-    const columns = ["author", "title", "pages", "status"];
-    const trow = document.createElement("tr");
-
-    columns.forEach((column) => {
-      const tdata = document.createElement("td");
-      tdata.classList.add(column);
-
-      if (column === "status") {
-        const span = document.createElement("span");
-        span.classList.add(
-          "status-badge",
-          item[column] ? "status-read" : "status-unread"
-        );
-        span.textContent = item[column] ? "Read" : "Unread";
-        tdata.appendChild(span);
-      } else {
-        tdata.textContent = item[column];
-      }
-
-      trow.appendChild(tdata);
-    });
-
-    const actionsTd = document.createElement("td");
-    actionsTd.classList.add("actions");
-
-    const statusBtn = document.createElement("button");
-    statusBtn.classList.add("btn", "btn-status");
-    statusBtn.textContent = "Read";
-
-    const delBtn = document.createElement("button");
-    delBtn.classList.add("btn", "btn-delete");
-    delBtn.textContent = "Delete";
-
-    actionsTd.appendChild(statusBtn);
-    actionsTd.appendChild(delBtn);
-    trow.appendChild(actionsTd);
-
-    tbody.appendChild(trow);
+    const row = createRow(item);
+    const actionsTd = createActionsButtons(item.id);
+    row.appendChild(actionsTd);
+    tbody.appendChild(row);
   });
 }
 
