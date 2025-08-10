@@ -2,11 +2,12 @@ const myLibrary = [];
 const tbody = document.querySelector("tbody");
 const dialog = document.querySelector("dialog");
 const addBtn = document.querySelector(".addBookBtn");
-const submitBtn = document.querySelector(".modal-btn-submit");
+const cancelBtn = document.querySelector(".modal-btn-cancel");
 const authorInput = document.querySelector("#author");
 const titleInput = document.querySelector("#title");
 const pagesInput = document.querySelector("#pages");
 const statusInput = document.querySelector("#status");
+const form = document.querySelector("form");
 
 function Book(author, title, pages, status) {
   this.id = crypto.randomUUID();
@@ -30,7 +31,7 @@ addBtn.addEventListener("click", () => {
   dialog.showModal();
 });
 
-submitBtn.addEventListener("click", (e) => {
+form.addEventListener("submit", (e) => {
   e.preventDefault();
   addBookToLibrary(
     authorInput.value,
@@ -38,10 +39,14 @@ submitBtn.addEventListener("click", (e) => {
     pagesInput.value,
     statusInput.checked
   );
-
   clearForm();
   dialog.close();
   displayBooks();
+});
+
+cancelBtn.addEventListener("click", () => {
+  clearForm();
+  dialog.close();
 });
 
 function clearForm() {
