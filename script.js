@@ -9,17 +9,19 @@ const pagesInput = document.querySelector("#pages");
 const statusInput = document.querySelector("#status");
 const form = document.querySelector("form");
 
-function Book(author, title, pages, status) {
-  this.id = crypto.randomUUID();
-  this.author = author;
-  this.title = title;
-  this.pages = pages;
-  this.status = status;
-}
+class Book {
+  constructor(author, title, pages, status) {
+    this.id = crypto.randomUUID();
+    this.author = author;
+    this.title = title;
+    this.pages = pages;
+    this.status = status;
+  }
 
-Book.prototype.changeStatus = function () {
-  this.status = !this.status;
-};
+  changeStatus() {
+    this.status = !this.status;
+  }
+}
 
 function addBookToLibrary(author, title, pages, status) {
   // take params, create a book then store it in the array
